@@ -1,0 +1,30 @@
+version: '2'
+services:
+  nestjs-web:
+    image: node:latest
+    container_name: nestjs-web
+    ports:
+      - "3000:3000"
+    links:
+      - nestjs-db
+    working_dir: /develop
+    command: [sh, -c, 'npm install --unsafe-perm && npm run start:dev']
+    volumes:
+      - "./:/develop:z"
+    environment:
+      - "POSTGRES_HOST=192.168.33.20"
+      - "POSTGRES_PORT=15432"
+      - "POSTGRES_DB_NAME=postgres"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+
+  nestjs-db:
+    image: postgres:latest
+    container_name: nestjs-db
+    ports:
+      - "15432:5432"
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+    volumes:
+      - "/data/db:/var/lib/postgresql/data:z"
